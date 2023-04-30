@@ -5,8 +5,8 @@ internal class Program
     static Random random = new Random();
     private static void Main(string[] args)
     {
-        SwordDamage.SwordDamage sword = new SwordDamage.SwordDamage(RollDice(3));
-        ArrowDamage.ArrowDamage arrow = new ArrowDamage.ArrowDamage(RollDice(1));
+        WeaponDamage sword = new SwordDamage(RollDice(3));
+        WeaponDamage arrow = new ArrowDamage(RollDice(1));
 
         while (true)
         {
@@ -53,7 +53,6 @@ class WeaponDamage
     public WeaponDamage(int startingRoll)
     {
         roll = startingRoll;
-        CalculateDamage();
     }
 
     public int roll;
@@ -96,10 +95,41 @@ class WeaponDamage
 
 class SwordDamage : WeaponDamage
 {
+    public const int BASE_DAM = 3; // no real reason for these to be public
+    public const int FLAME_DAM = 2;
 
+    public SwordDamage(int startingRoll) : base(startingRoll)
+    {
+        CalculateDamage();
+    }
+    protected override void CalculateDamage()
+    {
+        decimal MagicMult = 1M;
+        if (Magic) MagicMult = 1.75M;
+
+        Damage = (int)(Roll * MagicMult) + BASE_DAM;
+        if (Flaming) Damage += FLAME_DAM;
+        Debug.WriteLine($"CalculateDamage finished: {Damage} (roll: {Roll})");
+    }
 }
 
 class ArrowDamage : WeaponDamage
 {
+    private const decimal BASE_MULTIPLIER = 0.35M;
+    private const decimal MAGIC_MULTIPLIER = 2.5M;
+    private const decimal FLAME_DAMAGE = 1.25M;
 
+    public ArrowDamage(int startingRoll) : base(startingRoll)
+    {
+        CalculateDamage();
+    }
+    protected override void CalculateDamage()
+    {
+        decimal baseDamage = Roll * BASE_MULTIPLIER;
+        if (Magic) baseDamage *= MAGIC_MULTIPLIER;
+        if (Flaming) baseDamage += FLAME_DAMAGE;
+
+        Damage = (int)Math.Ceiling(baseDamage);
+        Debug.WriteLine($"CalculateDamage finished: {Damage} (roll: {Roll})");
+    }
 }
