@@ -53,6 +53,7 @@ class WeaponDamage
     public WeaponDamage(int startingRoll)
     {
         roll = startingRoll;
+        CalculateDamage();
     }
 
     public int roll;
@@ -95,13 +96,10 @@ class WeaponDamage
 
 class SwordDamage : WeaponDamage
 {
-    public const int BASE_DAM = 3; // no real reason for these to be public
-    public const int FLAME_DAM = 2;
+    private const int BASE_DAM = 3;
+    private const int FLAME_DAM = 2;
 
-    public SwordDamage(int startingRoll) : base(startingRoll)
-    {
-        CalculateDamage();
-    }
+    public SwordDamage(int startingRoll) : base(startingRoll) { }
     protected override void CalculateDamage()
     {
         decimal MagicMult = 1M;
@@ -109,7 +107,7 @@ class SwordDamage : WeaponDamage
 
         Damage = (int)(Roll * MagicMult) + BASE_DAM;
         if (Flaming) Damage += FLAME_DAM;
-        Debug.WriteLine($"CalculateDamage finished: {Damage} (roll: {Roll})");
+        Debug.WriteLine($"Sword CalculateDamage finished: {Damage} (roll: {Roll})");
     }
 }
 
@@ -119,10 +117,7 @@ class ArrowDamage : WeaponDamage
     private const decimal MAGIC_MULTIPLIER = 2.5M;
     private const decimal FLAME_DAMAGE = 1.25M;
 
-    public ArrowDamage(int startingRoll) : base(startingRoll)
-    {
-        CalculateDamage();
-    }
+    public ArrowDamage(int startingRoll) : base(startingRoll) { }
     protected override void CalculateDamage()
     {
         decimal baseDamage = Roll * BASE_MULTIPLIER;
@@ -130,6 +125,6 @@ class ArrowDamage : WeaponDamage
         if (Flaming) baseDamage += FLAME_DAMAGE;
 
         Damage = (int)Math.Ceiling(baseDamage);
-        Debug.WriteLine($"CalculateDamage finished: {Damage} (roll: {Roll})");
+        Debug.WriteLine($"Arrow CalculateDamage finished: {Damage} (roll: {Roll})");
     }
 }
